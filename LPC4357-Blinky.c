@@ -5,6 +5,7 @@
 #include "lpc43xx_cgu.h"
 
 volatile uint32_t msTicks = 0; // counter for 1ms SysTicks
+uint32_t msec;
 
 #define LED1_BIT			7 //LEDUSB
 #define LED1_PORT			0x7
@@ -31,7 +32,7 @@ void main()
 	// M3Frequency is automatically set when SetClock(BASE_M3_CLK... was called.
 	SysTick_Config(CGU_GetPCLKFrequency(CGU_PERIPHERAL_M4CORE)/1000);  				// Generate interrupt @ 1000 Hz
 	
-	for(;;)
+	/*for(;;)
 	{
 		GPIO_ClearValue(LED1_PORT,(1<<LED1_BIT));
 		for(i = 0; i < 200000; i++);
@@ -48,31 +49,34 @@ void main()
 		timer_mark = msTicks;					// Take timer snapshot 
 		while(msTicks < (timer_mark + 100));	// Wait until 100ms has passed
 		GPIO_SetValue(LED1_PORT,(1<<LED1_BIT));				// Turn the LED on
-	}
+	}*/
 
-	/*
+	
 	
 	// Init on-board LED as output
-	GPIO1->FIODIR |= 1 << 18;
+	//GPIO1->FIODIR |= 1 << 18;
 	
 	// Init SysTick
-	SysTick_Config(SystemFrequency / 1000);		// Generate interrupt every 1 ms
+	//SysTick_Config(SystemFrequency / 1000);		// Generate interrupt every 1 ms
 	
-	for (;;)
-	{
-		timer_mark = msTicks;					// Take timer snapshot 
-		while(msTicks < (timer_mark + 100));	// Wait until 100ms has passed
-		GPIO1->FIOCLR = 1 << 18;				// Turn the LED off
-	
-		timer_mark = msTicks;					// Take timer snapshot 
-		while(msTicks < (timer_mark + 100));	// Wait until 100ms has passed
-		GPIO1->FIOSET = 1 << 18;				// Turn the LED on
-	}*/
+	while (1)
+	{                           					// Loop forever
+		msec = 100;
+		while(msec);
+		GPIO_ClearValue(LED1_PORT,(1<<LED1_BIT));
+		msec = 100;
+		while(msec);
+		GPIO_SetValue(LED1_PORT,(1<<LED1_BIT));
+
+	}
 }
+
 
 //====================================================================================
 void SysTick_Handler(void)
 {
-	GPIO_SetValue(LED1_PORT,(1<<LED1_BIT));
-	msTicks++;
+	//GPIO_SetValue(LED1_PORT,(1<<LED1_BIT));
+	//msTicks++;
+	
+	if(msec)msec--;
 }
